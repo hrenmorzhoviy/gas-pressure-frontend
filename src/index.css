@@ -1,0 +1,850 @@
+/* ============================================================
+   GAS CATALOG — Лаба 2
+   Дизайн по мотивам omnicalculator.com
+   Цвета:
+     #F0F4F8  — светло сине-серый фон (основной фон страницы)
+     #FFFFFF  — белый (карточки, панели)
+     #1A1A2E  — тёмно-синий (текст, иконки, обводка кнопок)
+   ============================================================ */
+
+/* --- RESET & BASE --- */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #F0F4F8;
+    color: #1A1A2E;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* Обёртка всего приложения — фиксированная ширина как телефон */
+.app-shell {
+    width: 390px;
+    min-height: 100vh;
+    background: #F0F4F8;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ============================================================
+   НИЖНЯЯ НАВИГАЦИОННАЯ ПАНЕЛЬ
+   ============================================================ */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 390px;
+    height: 62px;
+    background: #FFFFFF;
+    border-top: 1.5px solid #D8E0EA;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 100;
+    box-shadow: 0 -2px 12px rgba(26, 26, 46, 0.07);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #8A96A8;
+    font-size: 11px;
+    font-weight: 500;
+    gap: 3px;
+    padding: 6px 20px;
+    border-radius: 12px;
+    transition: color 0.18s, background 0.18s;
+    letter-spacing: 0.02em;
+}
+
+.nav-item svg {
+    width: 22px;
+    height: 22px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.nav-item:hover {
+    color: #1A1A2E;
+    background: #F0F4F8;
+}
+
+.nav-item.active {
+    color: #1A1A2E;
+    font-weight: 700;
+}
+
+.nav-item.active svg {
+    stroke-width: 2.3;
+}
+
+/* ============================================================
+   СТРАНИЦА ПЛИТКА — /gases/
+   ============================================================ */
+.page-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1A1A2E;
+    padding: 18px 16px 0;
+    letter-spacing: -0.3px;
+}
+
+/* --- Блок фильтрации слайдером --- */
+.filter-block {
+    margin: 14px 16px 0;
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 14px 16px 16px;
+    box-shadow: 0 2px 10px rgba(26, 26, 46, 0.06);
+}
+
+.filter-block label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1A1A2E;
+    margin-bottom: 8px;
+    letter-spacing: 0.01em;
+}
+
+.filter-range-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.filter-range-row input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 5px;
+    border-radius: 3px;
+    background: linear-gradient(to right, #1A1A2E 0%, #1A1A2E var(--val, 50%), #D8E0EA var(--val, 50%), #D8E0EA 100%);
+    outline: none;
+    cursor: pointer;
+}
+
+.filter-range-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 2px solid #1A1A2E;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(26,26,46,0.15);
+    transition: transform 0.15s;
+}
+
+.filter-range-row input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+}
+
+.filter-range-row input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 2px solid #1A1A2E;
+    cursor: pointer;
+}
+
+.range-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1A1A2E;
+    min-width: 52px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.filter-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #8A96A8;
+    margin-bottom: 12px;
+}
+
+/* --- Белая скруглённая кнопка с чёрной обводкой --- */
+.btn-filter {
+    display: block;
+    width: 100%;
+    padding: 10px 0;
+    background: #FFFFFF;
+    color: #1A1A2E;
+    border: 1.5px solid #1A1A2E;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+    letter-spacing: 0.02em;
+}
+
+.btn-filter:hover {
+    background: #1A1A2E;
+    color: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(26, 26, 46, 0.18);
+}
+
+/* --- Сетка карточек 2 столбца --- */
+.gases-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 14px 16px 100px;
+}
+
+/* Обёртка карточки (для кнопок снизу) */
+.gas-card-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.gas-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.gas-card {
+    background: #FFFFFF;
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(26, 26, 46, 0.06);
+    transition: transform 0.18s, box-shadow 0.18s;
+}
+
+.gas-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(26, 26, 46, 0.10);
+}
+
+.gas-card-img {
+    width: 100%;
+    height: 110px;
+    object-fit: cover;
+    display: block;
+    background: #D8E0EA;
+}
+
+.gas-card-body {
+    padding: 10px 10px 12px;
+}
+
+.gas-card-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1A1A2E;
+    margin-bottom: 5px;
+    line-height: 1.25;
+}
+
+.gas-card-meta {
+    font-size: 11px;
+    color: #8A96A8;
+    margin: 2px 0;
+}
+
+.gas-card-likes {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #1A1A2E;
+    font-weight: 600;
+}
+
+.gas-card-likes svg {
+    width: 14px;
+    height: 14px;
+    fill: #E74C3C;
+    stroke: none;
+}
+
+/* --- Кнопки действий под карточкой (Лаба 2) --- */
+.gas-card-actions {
+    display: flex;
+    gap: 1px;
+    background: #D8E0EA;
+    border-radius: 0 0 16px 16px;
+    overflow: hidden;
+}
+
+.gas-card-actions form {
+    flex: 1;
+}
+
+.btn-action {
+    width: 100%;
+    padding: 7px 4px;
+    border: none;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+    letter-spacing: 0.01em;
+}
+
+.btn-like {
+    background: #FFF0F0;
+    color: #E74C3C;
+}
+
+.btn-like:hover {
+    background: #E74C3C;
+    color: #FFFFFF;
+}
+
+.btn-like.liked {
+    background: #E74C3C;
+    color: #FFFFFF;
+}
+
+.btn-like.liked:hover {
+    background: #C0392B;
+}
+
+.btn-delete {
+    background: #F0F4F8;
+    color: #555;
+}
+
+.btn-delete:hover {
+    background: #555;
+    color: #FFFFFF;
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 0;
+    color: #8A96A8;
+    font-size: 15px;
+}
+
+/* ============================================================
+   СТРАНИЦА ЛЕНТА — /feed/{id}
+   ============================================================ */
+.feed-page {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    background: #000;
+    overflow: hidden;
+}
+
+.feed-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.feed-img-fallback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+/* Градиент снизу */
+.feed-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70%;
+    background: linear-gradient(to top,
+        rgba(10, 10, 20, 0.92) 0%,
+        rgba(10, 10, 20, 0.5) 50%,
+        transparent 100%);
+    z-index: 2;
+}
+
+/* Оверлей поверх видео */
+.feed-overlay {
+    position: absolute;
+    bottom: 70px;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    padding: 0 14px 16px;
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+/* Левая часть */
+.feed-left {
+    flex: 1;
+    min-width: 0;
+}
+
+.feed-gas-name {
+    font-size: 19px;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-bottom: 6px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    line-height: 1.2;
+}
+
+/* Описание: 2 строки с «ещё» / «скрыть» через чекбокс */
+.feed-desc-wrap {
+    position: relative;
+}
+
+.feed-desc-toggle {
+    display: none;
+}
+
+.feed-desc-short {
+    font-size: 13px;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.feed-desc-full {
+    display: none;
+    font-size: 13px;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.45;
+}
+
+.feed-desc-toggle:checked ~ .feed-desc-short {
+    display: none;
+}
+
+.feed-desc-toggle:checked ~ .feed-desc-full {
+    display: block;
+}
+
+.feed-desc-btn {
+    display: inline-block;
+    font-size: 12px;
+    color: rgba(255,255,255,0.70);
+    cursor: pointer;
+    margin-top: 3px;
+    user-select: none;
+}
+
+.more-label { display: inline; }
+.less-label { display: none; }
+
+.feed-desc-toggle:checked ~ label .more-label { display: none; }
+.feed-desc-toggle:checked ~ label .less-label { display: inline; }
+
+/* Правая часть */
+.feed-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    min-width: 72px;
+}
+
+/* Параметры газа (поля по теме) */
+.feed-props {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.feed-prop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 5px 8px;
+    backdrop-filter: blur(4px);
+    min-width: 68px;
+}
+
+.feed-prop-label {
+    font-size: 9px;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.feed-prop-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: #FFFFFF;
+    text-align: center;
+    line-height: 1.3;
+}
+
+/* Кнопка лайка */
+.feed-like-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.feed-like-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.18);
+    font-size: 22px;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.15s;
+    backdrop-filter: blur(4px);
+}
+
+.feed-like-btn:hover {
+    background: rgba(231, 76, 60, 0.5);
+    transform: scale(1.1);
+}
+
+.feed-like-btn.liked {
+    background: #E74C3C;
+    color: #FFFFFF;
+}
+
+.feed-like-count {
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+    font-weight: 600;
+}
+
+/* Кнопка «Следующий» */
+.feed-next-btn {
+    display: block;
+    background: rgba(255,255,255,0.18);
+    color: #FFFFFF;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 20px;
+    text-align: center;
+    backdrop-filter: blur(4px);
+    transition: background 0.18s;
+    white-space: nowrap;
+}
+
+.feed-next-btn:hover {
+    background: rgba(255,255,255,0.35);
+}
+
+/* Пустое состояние ленты */
+.empty-feed {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+    padding: 32px 16px;
+    text-align: center;
+    gap: 10px;
+}
+
+.empty-feed-icon {
+    font-size: 52px;
+}
+
+.empty-feed h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1A1A2E;
+}
+
+.empty-feed p {
+    font-size: 14px;
+    color: #8A96A8;
+}
+
+/* ============================================================
+   СТРАНИЦА ДОБАВЛЕНИЯ — /add/
+   ============================================================ */
+.add-page {
+    padding: 18px 16px 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.add-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.add-badge {
+    background: #1A1A2E;
+    color: #FFFFFF;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+}
+
+.add-section {
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: 0 2px 10px rgba(26, 26, 46, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.add-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1A1A2E;
+    letter-spacing: 0.02em;
+    margin-bottom: 2px;
+}
+
+.add-media-preview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.add-media-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.add-media-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #8A96A8;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.add-preview-img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+    background: #D8E0EA;
+    display: block;
+}
+
+.add-preview-video {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+    background: #000;
+    display: block;
+}
+
+.add-no-video {
+    width: 100%;
+    height: 100px;
+    border-radius: 10px;
+    background: #D8E0EA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #8A96A8;
+}
+
+.add-label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1A1A2E;
+}
+
+.add-input {
+    border: 1.5px solid #D8E0EA;
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 14px;
+    color: #1A1A2E;
+    background: #F0F4F8;
+    outline: none;
+    transition: border-color 0.18s;
+    font-family: inherit;
+}
+
+.add-input:focus {
+    border-color: #1A1A2E;
+    background: #FFFFFF;
+}
+
+.add-textarea {
+    border: 1.5px solid #D8E0EA;
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 14px;
+    color: #1A1A2E;
+    background: #F0F4F8;
+    outline: none;
+    transition: border-color 0.18s;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 80px;
+}
+
+.add-textarea:focus {
+    border-color: #1A1A2E;
+    background: #FFFFFF;
+}
+
+.add-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.add-actions {
+    margin-top: 4px;
+}
+
+.add-publish-form {
+    margin-top: 0;
+}
+
+.btn-publish {
+    display: block;
+    width: 100%;
+    padding: 11px 0;
+    background: #1A1A2E;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.18s, box-shadow 0.18s;
+    letter-spacing: 0.02em;
+}
+
+.btn-publish:hover {
+    background: #2E2E5E;
+    box-shadow: 0 4px 14px rgba(26, 26, 46, 0.25);
+}
+
+.add-empty {
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 32px 16px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(26, 26, 46, 0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.add-empty-icon {
+    font-size: 40px;
+}
+
+.add-empty p {
+    font-size: 14px;
+    color: #8A96A8;
+}
+
+
+/* React SPA: адаптация исходного оформления rest_api. */
+#root { width:100%; }
+.app-shell { width:min(100%,390px); margin:0 auto; }
+.bottom-nav { width:min(100%,390px); height:calc(62px + env(safe-area-inset-bottom,0px)); padding-bottom:env(safe-area-inset-bottom,0px); flex-wrap:nowrap; }
+.bottom-nav .nav-item { flex:1 1 0; min-width:0; padding:6px 2px; border:0; background:transparent; line-height:1.4; }
+.bottom-nav .nav-item.disabled { color:#9ba6b6; cursor:default; opacity:.7; }
+.bottom-nav .nav-item:hover:not(.disabled) { background:#F0F4F8; color:#1A1A2E; }
+h1,h2,p,dl { margin-bottom:0; }
+button,input,textarea { font-family:inherit; }
+.gas-card { border-radius:16px; }
+.gas-card-wrap { min-width:0; }
+.gas-card-name,.feed-gas-name { overflow-wrap:anywhere; }
+.gases-grid { padding-bottom:calc(100px + env(safe-area-inset-bottom,0px)); }
+.filter-caption { display:block; font-size:13px; font-weight:600; margin-bottom:10px; }
+.filter-range-row > label { min-width:36px; font-size:12px; color:#8A96A8; }
+.filter-range-row input { min-width:0; }
+.filter-range-row .range-value { min-width:52px; }
+.feed-page { height:calc(100dvh - 62px - env(safe-area-inset-bottom,0px)); min-height:420px; }
+.feed-overlay { bottom:0; }
+.feed-right { flex:0 0 108px; }
+.feed-prop { width:100%; }
+.feed-desc-short { -webkit-line-clamp:2; line-clamp:2; }
+.feed-desc-full { max-height:35dvh; overflow:auto; overflow-wrap:anywhere; }
+.feed-desc-toggle { display:block; position:absolute; width:1px; height:1px; opacity:0; }
+.feed-desc-toggle:focus-visible ~ .feed-desc-btn { outline:2px solid white; outline-offset:3px; }
+.feed-like-btn:disabled { opacity:1; cursor:default; }
+.add-page .page-title { padding:0; margin:0; }
+.add-page { padding-bottom:calc(100px + env(safe-area-inset-bottom,0px)); }
+.add-page form { display:flex; flex-direction:column; gap:16px; }
+.add-page .field-label { font-size:13px; font-weight:600; margin-bottom:-10px; }
+.add-section h2 { font-size:13px; font-weight:700; }
+.add-preview { width:100%; height:150px; object-fit:contain; border-radius:10px; background:#0b1b32; }
+video.add-preview { object-fit:contain; background:#0b1b32; }
+.file-field-custom { display:flex; align-items:center; gap:10px; min-width:0; cursor:pointer; }
+.file-field-custom input { position:absolute; width:1px; height:1px; opacity:0; }
+.file-field-custom:focus-within { outline:2px solid #1A1A2E; outline-offset:3px; }
+.file-button { flex-shrink:0; background:#1A1A2E; color:white; border-radius:20px; padding:7px 12px; font-size:12px; }
+.file-name { font-size:11px; color:#8A96A8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+.demo-note { color:#64748b; font-size:12px; line-height:1.5; }
+.form-message { border-radius:12px; padding:12px; font-size:13px; background:white; }
+.form-message[role=alert] { color:#a32929; background:#fff0f0; }
+.form-message[role=status] { color:#256347; background:#e8f5ef; }
+.add-input,.add-textarea { width:100%; min-width:0; }
+:focus-visible { outline:2px solid #126782; outline-offset:3px; }
+.feed-attributes { color: #fff; }
+
+.feed-attributes dl {
+  margin: 8px 0 0;
+  padding: 8px;
+  background: rgb(0 0 0 / 70%);
+  border-radius: 8px;
+}
+
+.feed-attributes dd { margin-bottom: 6px; }
